@@ -1,4 +1,5 @@
 #!/bin/bash 
+# this bash scripts tests the delay of blocking an IP that exceeds a request rate limit threshold
 rl_limit=250 #Rate limit that needs to be tested
 url=$(echo test.achrafsouk.com) #URL where rate limit is applied
 
