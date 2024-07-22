@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template for Nginx echo server on EC2 with CloudFront distribution'
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.small
+      ImageId: ami-012965f751f14c4c6  # Amazon Linux 2 AMI in us-east-1, update as needed
+      SecurityGroups:
+        - !Ref InstanceSecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          sudo yum install nginx
+          systemctl start nginx
+          systemctl enable nginx
+          echo '
+          server {
+              listen 80;
+              server_name localhost;
+              location / {
+                  add_header Content-Type text/plain;
+                  return 200 "Hello from Nginx Echo Server!";
+              }
+          }' > /etc/nginx/conf.d/echo.conf
+          systemctl restart nginx
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP and SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          TargetOriginId: EC2Origin
+          ViewerProtocolPolicy: redirect-to-https
+        Enabled: true
+        HttpVersion: http2
+        Origins:
+          - DomainName: !GetAtt EC2Instance.PublicDnsName
+            Id: EC2Origin
+            CustomOriginConfig:
+              HTTPPort: 80
+              OriginProtocolPolicy: http-only
+
+Outputs:
+  InstancePublicDNS:
+    Description: Public DNS of EC2 instance
+    Value: !GetAtt EC2Instance.PublicDnsName
+  CloudFrontDomainName:
+    Description: Domain name of CloudFront distribution
+    Value: !GetAtt CloudFrontDistribution.DomainName
