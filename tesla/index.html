@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Truck</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            background-color: #000;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('assets/background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-content {
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 25px;
+        }
+        .features {
+            padding: 50px 20px;
+        }
+        .feature {
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .feature img {
+            width: 50%;
+            margin-right: 20px;
+        }
+        .feature-content {
+            width: 50%;
+        }
+        .video-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #autoplay-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">FUTURISTIC TRUCK</div>
+        <nav class="nav">
+            <a href="#features">Features</a>
+            <a href="#video">Video</a>
+            <a href="#order">Order</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>The Future of Trucks</h1>
+            <a href="#order" class="cta-button">Order Now</a>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="feature">
+            <img src="assets/feature1.jpg" alt="Truck Feature 1">
+            <div class="feature-content">
+                <h2>Unbreakable Design</h2>
+                <p>Our truck features an ultra-hard stainless steel exoskeleton, providing unmatched durability and passenger protection.</p>
+            </div>
+        </div>
+        <div class="feature">
+            <div class="feature-content">
+                <h2>Impressive Performance</h2>
+                <p>With a 0-60 mph acceleration in under 3 seconds, this truck redefines what's possible in the world of pickups.</p>
+            </div>
+            <img src="assets/feature2.jpg" alt="Truck Feature 2">
+        </div>
+    </section>
+
+    <section id="video" class="video-section">
+        <video id="autoplay-video" muted loop>
+            <source src="assets/video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </section>
+
+    <script>
+        const video = document.getElementById('autoplay-video');
+        const videoSection = document.querySelector('.video-section');
+
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        }, options);
+
+        observer.observe(videoSection);
+    </script>
+</body>
+</html>
